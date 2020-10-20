@@ -18,6 +18,9 @@ steps:
     command: 'restore'
     projects: 'eShopOnWeb.sln'
     feedsToUse: 'select'
+- task: WhiteSource@20
+  inputs:
+    projectName: 'plop'
 
 - task: SonarQubePrepare@4
   inputs:
