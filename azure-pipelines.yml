@@ -10,7 +10,8 @@ variables:
 - name: system.debug
   value: true 
 
-pool: Default
+pool:
+  vmImage: 'windows-latest'
 
 steps:
 - task: DotNetCoreCLI@2
@@ -18,15 +19,12 @@ steps:
     command: 'restore'
     projects: 'eShopOnWeb.sln'
     feedsToUse: 'select'
-- task: WhiteSource@20
-  inputs:
-    projectName: 'plop'
 
 - task: SonarQubePrepare@4
   inputs:
-    SonarQube: 'LocalSQ_On_TFS_VM'
+    SonarQube: 'DownloadsFolder_SQ_MultipleEditions'
     scannerMode: 'MSBuild'
-    projectKey: 'eshop-github'
+    projectKey: 'plop'
 
 - task: DotNetCoreCLI@2
   inputs:
