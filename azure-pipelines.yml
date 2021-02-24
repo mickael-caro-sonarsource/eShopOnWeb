@@ -10,7 +10,8 @@ variables:
 - name: system.debug
   value: true 
 
-pool: Default
+pool:
+  vmImage: windows-latest
 
 steps:
 - task: DotNetCoreCLI@2
@@ -18,15 +19,14 @@ steps:
     command: 'restore'
     projects: 'eShopOnWeb.sln'
     feedsToUse: 'select'
-- task: WhiteSource@20
-  inputs:
-    projectName: 'plop'
 
-- task: SonarQubePrepare@4
+- task: SonarCloudPrepare@1
   inputs:
-    SonarQube: 'LocalSQ_On_TFS_VM'
+    SonarCloud: 'SonarCloud'
+    organization: 'mickael-caro16778'
     scannerMode: 'MSBuild'
-    projectKey: 'eshop-github'
+    projectKey: 'eshop-get-msbuild-version'
+    projectName: 'eshop-get-msbuild-version'
 
 - task: DotNetCoreCLI@2
   inputs:
@@ -39,8 +39,4 @@ steps:
     projects: 'tests/**/*.csproj'
     arguments: '--collect "Code Coverage"'
 
-- task: SonarQubeAnalyze@4
-
-- task: SonarQubePublish@4
-  inputs:
-    pollingTimeoutSec: '300'
+- task: SonarCloudAnalyze@1
