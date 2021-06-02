@@ -1,11 +1,18 @@
 ﻿using Ardalis.ListStartupServices;
+using BlazorAdmin;
+using BlazorAdmin.Services;
+using Blazored.LocalStorage;
+using BlazorShared;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.eShopWeb.ApplicationCore.Interfaces;
 using Microsoft.eShopWeb.Infrastructure.Data;
 using Microsoft.eShopWeb.Infrastructure.Identity;
 using Microsoft.eShopWeb.Web.Configuration;
@@ -19,13 +26,6 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Mime;
-using BlazorAdmin;
-using BlazorAdmin.Services;
-using Blazored.LocalStorage;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.DataProtection;
-using Microsoft.eShopWeb.ApplicationCore.Interfaces;
-using BlazorShared;
 
 namespace Microsoft.eShopWeb.Web
 {
@@ -161,6 +161,8 @@ namespace Microsoft.eShopWeb.Web
             services.AddScoped<HttpService>();
             services.AddBlazorServices();
 
+            services.AddDatabaseDeveloperPageExceptionFilter();
+
             _services = services; // used to debug registered services
         }
 
@@ -168,6 +170,16 @@ namespace Microsoft.eShopWeb.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            var catalogBaseUrl = Configuration.GetValue(typeof(string), "CatalogBaseUrl") as string;
+            if (!string.IsNullOrEmpty(catalogBaseUrl))
+            {
+                app.Use((context, next) =>
+                {
+                    context.Request.PathBase = new PathString(catalogBaseUrl);
+                    return next();
+                });
+            }
+
             app.UseHealthChecks("/health",
                 new HealthCheckOptions
                 {
@@ -189,8 +201,8 @@ namespace Microsoft.eShopWeb.Web
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseShowAllServicesMiddleware();
-                app.UseDatabaseErrorPage();
+                app.UseShowAllServicesMiddleware();                                
+                app.UseMigrationsEndPoint();
                 app.UseWebAssemblyDebugging();
             }
             else

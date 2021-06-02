@@ -4,9 +4,15 @@
 
 Sample ASP.NET Core reference application, powered by Microsoft, demonstrating a single-process (monolithic) application architecture and deployment model. If you're new to .NET development, read the [Getting Started for Beginners](https://github.com/dotnet-architecture/eShopOnWeb/wiki/Getting-Started-for-Beginners) guide.
 
-A list of Frequently Asked Questions about this repository can be found [here](https://github.com/dotnet-architecture/eShopOnWeb/wiki/Frequently-Asked-Questions). 
+A list of Frequently Asked Questions about this repository can be found [here](https://github.com/dotnet-architecture/eShopOnWeb/wiki/Frequently-Asked-Questions).
 
-This reference application is meant to support the free .PDF download ebook: [Architecting Modern Web Applications with ASP.NET Core and Azure](https://aka.ms/webappebook), updated to **ASP.NET Core 3.1**. [Also available in ePub/mobi formats](https://dotnet.microsoft.com/learn/web/aspnet-architecture).
+## Overview Video
+
+[Steve "ardalis" Smith](https://twitter.com/ardalis) recorded [a live stream providing an overview of the eShopOnWeb reference app](https://www.youtube.com/watch?v=vRZ8ucGac8M&ab_channel=Ardalis) in October 2020. 
+
+## eBook
+
+This reference application is meant to support the free .PDF download ebook: [Architecting Modern Web Applications with ASP.NET Core and Azure](https://aka.ms/webappebook), updated to **ASP.NET Core 5.0**. [Also available in ePub/mobi formats](https://dotnet.microsoft.com/learn/web/aspnet-architecture).
 
 You can also read the book in online pages at the .NET docs here: 
 https://docs.microsoft.com/dotnet/architecture/modern-web-apps-azure/
@@ -18,7 +24,7 @@ The **eShopOnWeb** sample is related to the [eShopOnContainers](https://github.c
 The goal for this sample is to demonstrate some of the principles and patterns described in the [eBook](https://aka.ms/webappebook). It is not meant to be an eCommerce reference application, and as such it does not implement many features that would be obvious and/or essential to a real eCommerce application.
 
 > ### VERSIONS
-> #### The `master` branch is currently running ASP.NET Core 3.1.
+> #### The `master` branch is currently running ASP.NET Core 5.0.
 > #### Older versions are tagged.
 
 ## Topics (eBook TOC)
@@ -51,56 +57,56 @@ You can also run the samples in Docker (see below).
 
 1. Update `Startup.cs`'s `ConfigureDevelopmentServices` method as follows:
 
-```
-        public void ConfigureDevelopmentServices(IServiceCollection services)
-        {
-            // use in-memory database
-            //ConfigureTestingServices(services);
+    ```csharp
+    public void ConfigureDevelopmentServices(IServiceCollection services)
+    {
+        // use in-memory database
+        //ConfigureTestingServices(services);
 
-            // use real database
-            ConfigureProductionServices(services);
+        // use real database
+        ConfigureProductionServices(services);
 
-        }
-```
+    }
+    ```
 
 1. Ensure your connection strings in `appsettings.json` point to a local SQL Server instance.
 1. Ensure the tool EF was already installed. You can find some help [here](https://docs.microsoft.com/ef/core/miscellaneous/cli/dotnet)
 
-```
-dotnet tool install --global dotnet-ef
-```
+    ```
+    dotnet tool install --global dotnet-ef
+    ```
 
 1. Open a command prompt in the Web folder and execute the following commands:
 
-```
-dotnet restore
-dotnet tool restore
-dotnet ef database update -c catalogcontext -p ../Infrastructure/Infrastructure.csproj -s Web.csproj
-dotnet ef database update -c appidentitydbcontext -p ../Infrastructure/Infrastructure.csproj -s Web.csproj
-```
+    ```
+    dotnet restore
+    dotnet tool restore
+    dotnet ef database update -c catalogcontext -p ../Infrastructure/Infrastructure.csproj -s Web.csproj
+    dotnet ef database update -c appidentitydbcontext -p ../Infrastructure/Infrastructure.csproj -s Web.csproj
+    ```
 
-These commands will create two separate databases, one for the store's catalog data and shopping cart information, and one for the app's user credentials and identity data.
+    These commands will create two separate databases, one for the store's catalog data and shopping cart information, and one for the app's user credentials and identity data.
 
 1. Run the application.
 
-The first time you run the application, it will seed both databases with data such that you should see products in the store, and you should be able to log in using the demouser@microsoft.com account.
+    The first time you run the application, it will seed both databases with data such that you should see products in the store, and you should be able to log in using the demouser@microsoft.com account.
 
-Note: If you need to create migrations, you can use these commands:
+    Note: If you need to create migrations, you can use these commands:
 
-```
--- create migration (from Web folder CLI)
-dotnet ef migrations add InitialModel --context catalogcontext -p ../Infrastructure/Infrastructure.csproj -s Web.csproj -o Data/Migrations
+    ```
+    -- create migration (from Web folder CLI)
+    dotnet ef migrations add InitialModel --context catalogcontext -p ../Infrastructure/Infrastructure.csproj -s Web.csproj -o Data/Migrations
 
-dotnet ef migrations add InitialIdentityModel --context appidentitydbcontext -p ../Infrastructure/Infrastructure.csproj -s Web.csproj -o Identity/Migrations
-```
+    dotnet ef migrations add InitialIdentityModel --context appidentitydbcontext -p ../Infrastructure/Infrastructure.csproj -s Web.csproj -o Identity/Migrations
+    ```
 
 ## Running the sample using Docker
 
 You can run the Web sample by running these commands from the root folder (where the .sln file is located):
 
 ```
-    docker-compose build
-    docker-compose up
+docker-compose build
+docker-compose up
 ```
 
 You should be able to make requests to localhost:5106 for the Web project, and localhost:5200 for the Public API project once these commands complete. If you have any problems, especially with login, try from a new guest or incognito browser instance.
@@ -108,6 +114,7 @@ You should be able to make requests to localhost:5106 for the Web project, and l
 You can also run the applications by using the instructions located in their `Dockerfile` file in the root of each project. Again, run these commands from the root of the solution (where the .sln file is located).
 
 ## Community Extensions
+
 We have some great contributions from the community, and while these aren't maintained by Microsoft we still want to highlight them.
 
 [eShopOnWeb VB.NET](https://github.com/VBAndCs/eShopOnWeb_VB.NET) by Mohammad Hamdy Ghanem
